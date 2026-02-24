@@ -1,23 +1,41 @@
-import { useState } from "react";
-import Controls from "./components/Controls";
-import PromptOutput from "./components/PromptOutput";
-import { generatePrompt } from "./engine/promptEngine";
+import {useState} from 'react'
+import LyricsPanel from './ui/LyricsPanel'
+import DirectorPanel from './ui/DirectorPanel'
+import ExportCards from './ui/ExportCards'
+import {generateAllFormats} from './core/promptEngine'
 
-export default function App() {
-  const [prompt, setPrompt] = useState("");
+export default function App(){
 
-  return (
-    <div className="container">
-      <h1>🎛 استديو علي</h1>
+const [lyrics,setLyrics]=useState("")
+const [formats,setFormats]=useState<any>(null)
 
-      <Controls
-        onGenerate={(data: any) => {
-          const result = generatePrompt(data);
-          setPrompt(result);
-        }}
-      />
+const [data,setData]=useState({
+genre:"Cinematic",
+vocal:"Emotional Male Vocal",
+bpm:90,
+intensity:7
+})
 
-      {prompt && <PromptOutput prompt={prompt} />}
-    </div>
-  );
+function handleGenerate(){
+const result = generateAllFormats({...data,lyrics})
+setFormats(result)
+}
+
+return(
+<div className="container">
+
+<div className="header">
+<h1>🎛 استديو علي</h1>
+<span>الإصدار الاحترافي - Dark</span>
+</div>
+
+<div className="layout">
+<LyricsPanel lyrics={lyrics} setLyrics={setLyrics} />
+<DirectorPanel data={data} setData={setData} onGenerate={handleGenerate} />
+</div>
+
+<ExportCards formats={formats} />
+
+</div>
+)
 }
